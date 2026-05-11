@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Toy Rotation" />
+<meta name="theme-color" content="#ffffff" />
+<title>Toy Rotation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f7f4;
+    --surface: #ffffff;
+    --surface2: #f2efe9;
+    --border: #e4e0d8;
+    --border2: #d0ccc0;
+    --text: #1a1816;
+    --text2: #6b6660;
+    --text3: #9e9990;
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #0F6E56;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --amber-dark: #633806;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --blue-dark: #0C447C;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-dark: #3C3489;
+    --red: #A32D2D;
+    --red-light: #FCEBEB;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-pill: 20px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: calc(var(--safe-top) + 16px) 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .app-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.3px; }
+  .app-subtitle { font-size: 12px; color: var(--text3); margin-top: 1px; }
+  .month-sel { font-size: 13px; font-weight: 500; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; appearance: none; -webkit-appearance: none; }
+
+  /* Stats bar */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.2; }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: var(--bg);
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .filter-btn.active { background: var(--text); color: var(--surface); border-color: var(--text); }
+
+  /* Age filter row */
+  .age-row {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .age-row::-webkit-scrollbar { display: none; }
+  .age-pill {
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .age-pill.active-infant  { background: var(--blue-light);   color: var(--blue-dark);   border-color: var(--blue); }
+  .age-pill.active-toddler { background: var(--green-light);  color: var(--green-dark);  border-color: var(--green); }
+  .age-pill.active-preschool { background: var(--amber-light); color: var(--amber-dark); border-color: var(--amber); }
+  .age-pill.active-school  { background: var(--purple-light); color: var(--purple-dark); border-color: var(--purple); }
+
+  /* Rotation tip */
+  .tip-bar {
+    margin: 0 16px 12px;
+    background: var(--amber-light);
+    border: 1px solid #EF9F27;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--amber-dark);
+    display: none;
+    line-height: 1.5;
+  }
+  .tip-bar.show { display: block; }
+  .tip-bar strong { font-weight: 600; }
+
+  /* Toy grid */
+  .toy-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .toy-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toy-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .toy-card.used::before { background: var(--green); }
+  .toy-card.due::before  { background: var(--amber); }
+  .toy-card.storage::before { background: var(--border2); }
+
+  .toy-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .toy-name { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .toy-category { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .age-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+  .age-badge.infant    { background: var(--blue-light);    color: var(--blue-dark); }
+  .age-badge.toddler   { background: var(--green-light);   color: var(--green-dark); }
+  .age-badge.preschool { background: var(--amber-light);   color: var(--amber-dark); }
+  .age-badge.school    { background: var(--purple-light);  color: var(--purple-dark); }
+
+  .toy-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .toy-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-used    { background: var(--green); }
+  .dot-due     { background: var(--amber); }
+  .dot-storage { background: var(--border2); }
+
+  .toy-actions { display: flex; gap: 6px; }
+  .btn-sm {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    color: var(--text2);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.12s;
+  }
+  .btn-sm:active { transform: scale(0.96); }
+  .btn-use { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+  .btn-icon { padding: 5px 8px; color: var(--text3); }
+
+  /* Empty */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 14px; }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: calc(var(--safe-bottom) + 20px);
+    right: 20px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--surface);
+    font-size: 28px;
+    font-weight: 300;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    z-index: 200;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s;
+  }
+  .fab:active { transform: scale(0.93); }
+
+  /* Bottom sheet */
+  .sheet-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 300;
+  }
+  .sheet-overlay.open { display: block; }
+  .sheet {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    padding: 0 0 calc(var(--safe-bottom) + 20px);
+    z-index: 301;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 12px auto 16px; }
+  .sheet-title { font-size: 17px; font-weight: 600; color: var(--text); padding: 0 20px 16px; }
+  .sheet-body { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+  .field-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+  .field input, .field select {
+    width: 100%;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    color: var(--text);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--text); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-add {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    background: var(--text);
+    color: var(--surface);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s;
+  }
+  .btn-add:active { transform: scale(0.98); }
+
+  .spacer { height: 80px; }
+
+  /* Rec badge */
+  .rec-label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--amber);
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">🧸 Toy Rotation</div>
+      <div class="app-subtitle" id="subtitle-label">Loading...</div>
+    </div>
+    <select class="month-sel" id="month-select" onchange="render()">
+      <option value="5-2026">May 2026</option>
+      <option value="4-2026">Apr 2026</option>
+      <option value="3-2026">Mar 2026</option>
+      <option value="2-2026">Feb 2026</option>
+    </select>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All toys</button>
+  <button class="filter-btn" onclick="setFilter('used',this)">In use</button>
+  <button class="filter-btn" onclick="setFilter('due',this)">Rotate in ⚠️</button>
+  <button class="filter-btn" onclick="setFilter('storage',this)">In storage</button>
+</div>
+
+<div class="age-row" id="age-row">
+  <button class="age-pill" onclick="setAge('',this)">All ages</button>
+  <button class="age-pill" onclick="setAge('infant',this)">Infant 0–12m</button>
+  <button class="age-pill" onclick="setAge('toddler',this)">Toddler 1–3y</button>
+  <button class="age-pill" onclick="setAge('preschool',this)">Preschool 3–5y</button>
+  <button class="age-pill" onclick="setAge('school',this)">School 5+</button>
+</div>
+
+<div class="tip-bar" id="tip-bar"></div>
+
+<div class="toy-list" id="toy-list"></div>
+<div class="spacer"></div>
+
+<button class="fab" onclick="openSheet()" aria-label="Add toy">+</button>
+
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Add a toy</div>
+  <div class="sheet-body">
+    <div class="field">
+      <div class="field-label">Toy name</div>
+      <input type="text" id="new-name" placeholder="e.g. Mega Bloks set" />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">Age group</div>
+        <select id="new-age">
+          <option value="infant">Infant 0–12m</option>
+          <option value="toddler">Toddler 1–3y</option>
+          <option value="preschool">Preschool 3–5y</option>
+          <option value="school">School age 5+</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="field-label">Category</div>
+        <input type="text" id="new-category" placeholder="e.g. puzzles" />
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Weeks already in rotation (0 if new)</div>
+      <input type="number" id="new-weeks" placeholder="0" min="0" value="0" />
+    </div>
+    <button class="btn-add" onclick="addToy()">Add to inventory</button>
+  </div>
+</div>
+
+<script>
+const AGE_LABELS = { infant:'Infant 0–12m', toddler:'Toddler 1–3y', preschool:'Preschool 3–5y', school:'School 5+' };
+const ROTATION_WEEKS = 4;
+const STORAGE_KEY = 'toyrotation_v1';
+
+let filter = 'all';
+let ageFilter = '';
+let nextId = 100;
+
+const DEFAULT_TOYS = [
+  { id:1, name:'Shape Sorter Cube', age:'infant', category:'developmental', weeksOut:5, usedMonths:['5-2026'] },
+  { id:2, name:'Wooden Stacking Rings', age:'infant', category:'stacking', weeksOut:3, usedMonths:[] },
+  { id:3, name:'Push & Pull Wagon', age:'toddler', category:'outdoor', weeksOut:6, usedMonths:['5-2026'] },
+  { id:4, name:'Mega Bloks Set', age:'toddler', category:'building', weeksOut:2, usedMonths:['5-2026'] },
+  { id:5, name:'Jumbo Foam Puzzles', age:'preschool', category:'puzzles', weeksOut:7, usedMonths:[] },
+  { id:6, name:'Play Kitchen Set', age:'preschool', category:'pretend play', weeksOut:1, usedMonths:['5-2026'] },
+  { id:7, name:'Marble Run', age:'school', category:'STEM', weeksOut:8, usedMonths:[] },
+  { id:8, name:'Art Supply Kit', age:'school', category:'creative', weeksOut:3, usedMonths:['5-2026'] },
+  { id:9, name:'Sensory Bin Kit', age:'infant', category:'sensory', weeksOut:9, usedMonths:[] },
+  { id:10, name:'Ride-On Scooter', age:'toddler', category:'outdoor', weeksOut:4, usedMonths:[] },
+];
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      nextId = d.nextId || 100;
+      return d.toys;
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_TOYS));
+}
+
+function save(toys) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ toys, nextId })); } catch(e) {}
+}
+
+let toys = load();
+
+function getMonth() { return document.getElementById('month-select').value; }
+
+function toyStatus(toy) {
+  const m = getMonth();
+  if (toy.usedMonths.includes(m)) return 'used';
+  if (toy.weeksOut >= ROTATION_WEEKS) return 'due';
+  return 'storage';
+}
+
+function setFilter(f, el) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function setAge(a, el) {
+  ageFilter = a;
+  document.querySelectorAll('.age-pill').forEach(b => {
+    b.className = 'age-pill';
+  });
+  if (a) el.className = `age-pill active-${a}`;
+  else el.className = 'age-pill';
+  render();
+}
+
+function toggleUsed(id) {
+  const m = getMonth();
+  const toy = toys.find(t => t.id === id);
+  if (!toy) return;
+  if (toy.usedMonths.includes(m)) {
+    toy.usedMonths = toy.usedMonths.filter(x => x !== m);
+    toy.weeksOut = Math.max(0, toy.weeksOut + 2);
+  } else {
+    toy.usedMonths.push(m);
+    toy.weeksOut = 0;
+  }
+  save(toys);
+  render();
+}
+
+function removeToy(id) {
+  if (!confirm('Remove this toy?')) return;
+  toys = toys.filter(t => t.id !== id);
+  save(toys);
+  render();
+}
+
+function addToy() {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) { alert('Please enter a toy name'); return; }
+  const age = document.getElementById('new-age').value;
+  const category = document.getElementById('new-category').value.trim() || 'general';
+  const weeks = parseInt(document.getElementById('new-weeks').value) || 0;
+  toys.push({ id: nextId++, name, age, category, weeksOut: weeks, usedMonths: [] });
+  save(toys);
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-category').value = '';
+  document.getElementById('new-weeks').value = '0';
+  closeSheet();
+  filter = 'all';
+  ageFilter = '';
+  document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.age-pill').forEach((b,i) => { b.className = 'age-pill'; if(i===0) {} });
+  render();
+}
+
+function openSheet() {
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  setTimeout(() => document.getElementById('new-name').focus(), 300);
+}
+
+function closeSheet() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+
+function render() {
+  const m = getMonth();
+  const monthNames = {'5-2026':'May 2026','4-2026':'Apr 2026','3-2026':'Mar 2026','2-2026':'Feb 2026'};
+  document.getElementById('subtitle-label').textContent = `${toys.length} toys · ${monthNames[m] || m}`;
+
+  let visible = ageFilter ? toys.filter(t => t.age === ageFilter) : [...toys];
+  if (filter !== 'all') visible = visible.filter(t => toyStatus(t) === filter);
+
+  const used = toys.filter(t => toyStatus(t) === 'used');
+  const due  = toys.filter(t => toyStatus(t) === 'due');
+  const stor = toys.filter(t => toyStatus(t) === 'storage');
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-val">${toys.length}</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--green)">${used.length}</div><div class="stat-label">In use</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--amber)">${due.length}</div><div class="stat-label">Rotate in</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--text3)">${stor.length}</div><div class="stat-label">Storage</div></div>
+  `;
+
+  const tip = document.getElementById('tip-bar');
+  if (due.length > 0) {
+    tip.className = 'tip-bar show';
+    const names = due.slice(0,2).map(t=>t.name).join(', ');
+    tip.innerHTML = `<strong>Time to rotate:</strong> ${names}${due.length > 2 ? ` + ${due.length-2} more` : ''} have been out 4+ weeks. Consider swapping them in.`;
+  } else { tip.className = 'tip-bar'; }
+
+  const list = document.getElementById('toy-list');
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty">No toys match this filter.</div>';
+    return;
+  }
+
+  list.innerHTML = visible.map(t => {
+    const s = toyStatus(t);
+    const isDue = s === 'due';
+    const isUsed = s === 'used';
+    return `<div class="toy-card ${s}">
+      <div class="toy-top">
+        <div>
+          <div class="toy-name">${t.name}${isDue ? '<span class="rec-label">ROTATE IN</span>' : ''}</div>
+          <div class="toy-category">${t.category} · ${t.weeksOut}w in rotation</div>
+        </div>
+        <span class="age-badge ${t.age}">${AGE_LABELS[t.age]}</span>
+      </div>
+      <div class="toy-bottom">
+        <span class="toy-status">
+          <span class="dot ${isUsed ? 'dot-used' : isDue ? 'dot-due' : 'dot-storage'}"></span>
+          ${isUsed ? 'In use this month' : isDue ? 'Ready to rotate in' : 'In storage'}
+        </span>
+        <div class="toy-actions">
+          <button class="btn-sm ${!isUsed ? 'btn-use' : ''}" onclick="toggleUsed(${t.id})">
+            ${isUsed ? 'Store' : 'Use'}
+          </button>
+          <button class="btn-sm btn-icon" onclick="removeToy(${t.id})" aria-label="Remove">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+render();
+</script>
+</body>
+</html>
