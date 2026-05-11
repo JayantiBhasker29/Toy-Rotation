@@ -12,6 +12,420 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f9f7f4; --surface: #ffffff; --surface2: #f2efe9;
+    --border: #e4e0d8; --border2: #d0ccc0;
+    --text: #1a1816; --text2: #6b6660; --text3: #9e9990;
+    --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #0F6E56;
+    --amber: #BA7517; --amber-light: #FAEEDA; --amber-dark: #633806;
+    --blue: #185FA5; --blue-light: #E6F1FB; --blue-dark: #0C447C;
+    --purple: #534AB7; --purple-light: #EEEDFE; --purple-dark: #3C3489;
+    --red: #A32D2D; --red-light: #FCEBEB;
+    --k0: #185FA5; --k0-light: #E6F1FB; --k0-dark: #0C447C;
+    --k1: #993556; --k1-light: #FBEAF0; --k1-dark: #4B1528;
+    --radius: 12px; --radius-sm: 8px; --radius-pill: 20px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: calc(var(--safe-top) + 14px) 16px 0; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .app-title { font-family: 'DM Serif Display', serif; font-size: 21px; color: var(--text); letter-spacing: -0.3px; }
+  .month-sel { font-size: 13px; font-weight: 500; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; appearance: none; -webkit-appearance: none; }
+
+  .kid-tabs { display: flex; }
+  .kid-tab { flex: 1; padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 2.5px solid transparent; color: var(--text3); transition: all 0.15s; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .kid-tab.k0 { color: var(--k0); border-bottom-color: var(--k0); }
+  .kid-tab.k1 { color: var(--k1); border-bottom-color: var(--k1); }
+  .kavatar { width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .kavatar-0 { background: var(--k0-light); color: var(--k0-dark); }
+  .kavatar-1 { background: var(--k1-light); color: var(--k1-dark); }
+
+  .cap-bar { padding: 10px 16px 10px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .cap-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .cap-label { font-size: 12px; color: var(--text2); }
+  .cap-count { font-size: 12px; font-weight: 600; }
+  .cap-count.k0 { color: var(--k0); }
+  .cap-count.k1 { color: var(--k1); }
+  .cap-count.full { color: var(--red); }
+  .cap-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .cap-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .cap-fill.k0 { background: var(--k0); }
+  .cap-fill.k1 { background: var(--k1); }
+  .cap-fill.full { background: var(--red); }
+
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.2; }
+
+  .filters { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: var(--bg); }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-btn { white-space: nowrap; font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-pill); border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.15s; flex-shrink: 0; }
+  .filter-btn.active { background: var(--text); color: var(--surface); border-color: var(--text); }
+
+  .age-row { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .age-row::-webkit-scrollbar { display: none; }
+  .age-pill { white-space: nowrap; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+  .age-pill.ai { background: var(--blue-light);   color: var(--blue-dark);   border-color: var(--blue); }
+  .age-pill.at { background: var(--green-light);  color: var(--green-dark);  border-color: var(--green); }
+  .age-pill.ap { background: var(--amber-light);  color: var(--amber-dark);  border-color: var(--amber); }
+  .age-pill.as { background: var(--purple-light); color: var(--purple-dark); border-color: var(--purple); }
+
+  .tip { margin: 0 16px 12px; border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; line-height: 1.5; display: none; }
+  .tip.show { display: block; }
+  .tip.rot { background: var(--amber-light); border: 1px solid #EF9F27; color: var(--amber-dark); }
+  .tip.lim { background: var(--red-light); border: 1px solid #E24B4A; color: var(--red); }
+  .tip strong { font-weight: 600; }
+
+  .toy-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+  .toy-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+  .toy-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .toy-card.used::before { background: var(--green); }
+  .toy-card.due::before  { background: var(--amber); }
+  .toy-card.storage::before { background: var(--border2); }
+  .toy-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .toy-name { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .toy-cat { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .age-badge { flex-shrink: 0; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: var(--radius-pill); white-space: nowrap; }
+  .age-badge.infant    { background: var(--blue-light);    color: var(--blue-dark); }
+  .age-badge.toddler   { background: var(--green-light);   color: var(--green-dark); }
+  .age-badge.preschool { background: var(--amber-light);   color: var(--amber-dark); }
+  .age-badge.school    { background: var(--purple-light);  color: var(--purple-dark); }
+  .toy-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .toy-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .d-used { background: var(--green); }
+  .d-due  { background: var(--amber); }
+  .d-stor { background: var(--border2); }
+  .toy-acts { display: flex; gap: 6px; }
+  .btn-sm { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.12s; }
+  .btn-sm:active { transform: scale(0.96); }
+  .btn-use { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+  .btn-ico { padding: 5px 8px; color: var(--text3); }
+  .rlabel { display: inline-block; font-size: 10px; font-weight: 600; background: var(--amber); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 14px; }
+
+  .fab { position: fixed; bottom: calc(var(--safe-bottom) + 20px); right: 20px; width: 52px; height: 52px; border-radius: 50%; background: var(--text); color: var(--surface); font-size: 28px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,0.18); z-index: 200; -webkit-tap-highlight-color: transparent; transition: transform 0.15s; }
+  .fab:active { transform: scale(0.93); }
+  .cfg-btn { position: fixed; bottom: calc(var(--safe-bottom) + 22px); left: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--text2); font-size: 20px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 200; -webkit-tap-highlight-color: transparent; }
+
+  .soverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 300; }
+  .soverlay.open { display: block; }
+  .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 20px 20px 0 0; padding: 0 0 calc(var(--safe-bottom) + 20px); z-index: 301; transform: translateY(100%); transition: transform 0.28s cubic-bezier(0.32,0.72,0,1); }
+  .sheet.open { transform: translateY(0); }
+  .shandle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 12px auto 16px; }
+  .stitle { font-size: 17px; font-weight: 600; color: var(--text); padding: 0 20px 16px; }
+  .sbody { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+  .flabel { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+  .sbody input, .sbody select { width: 100%; font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); appearance: none; -webkit-appearance: none; }
+  .sbody input:focus, .sbody select:focus { outline: none; border-color: var(--text); }
+  .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-add { width: 100%; padding: 14px; margin-top: 8px; background: var(--text); color: var(--surface); font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif; border: none; border-radius: var(--radius); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .btn-add:active { transform: scale(0.98); }
+  .spacer { height: 90px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="app-title">🧸 Toy Rotation</div>
+    <select class="month-sel" id="month-select" onchange="render()">
+      <option value="5-2026">May 2026</option>
+      <option value="4-2026">Apr 2026</option>
+      <option value="3-2026">Mar 2026</option>
+      <option value="2-2026">Feb 2026</option>
+    </select>
+  </div>
+  <div class="kid-tabs" id="kid-tabs"></div>
+</div>
+
+<div class="cap-bar" id="cap-bar"></div>
+<div class="stats" id="stats"></div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All toys</button>
+  <button class="filter-btn" onclick="setFilter('used',this)">In use</button>
+  <button class="filter-btn" onclick="setFilter('due',this)">Rotate in ⚠️</button>
+  <button class="filter-btn" onclick="setFilter('storage',this)">In storage</button>
+</div>
+<div class="age-row">
+  <button class="age-pill" onclick="setAge('',this)">All ages</button>
+  <button class="age-pill" onclick="setAge('infant',this)">Infant 0–12m</button>
+  <button class="age-pill" onclick="setAge('toddler',this)">Toddler 1–3y</button>
+  <button class="age-pill" onclick="setAge('preschool',this)">Preschool 3–5y</button>
+  <button class="age-pill" onclick="setAge('school',this)">School 5+</button>
+</div>
+
+<div class="tip rot" id="tip-rot"></div>
+<div class="tip lim" id="tip-lim"></div>
+<div class="toy-list" id="toy-list"></div>
+<div class="spacer"></div>
+
+<button class="cfg-btn" onclick="openCfg()" aria-label="Settings">⚙️</button>
+<button class="fab" onclick="openAdd()" aria-label="Add toy">+</button>
+
+<!-- Add toy -->
+<div class="soverlay" id="ov-add" onclick="closeAdd()"></div>
+<div class="sheet" id="sh-add">
+  <div class="shandle"></div>
+  <div class="stitle" id="add-title">Add a toy</div>
+  <div class="sbody">
+    <div><div class="flabel">Toy name</div><input type="text" id="new-name" placeholder="e.g. Mega Bloks set" /></div>
+    <div class="frow">
+      <div><div class="flabel">Age group</div>
+        <select id="new-age">
+          <option value="infant">Infant 0–12m</option>
+          <option value="toddler">Toddler 1–3y</option>
+          <option value="preschool">Preschool 3–5y</option>
+          <option value="school">School age 5+</option>
+        </select>
+      </div>
+      <div><div class="flabel">Category</div><input type="text" id="new-cat" placeholder="e.g. puzzles" /></div>
+    </div>
+    <div><div class="flabel">Weeks in rotation (0 if new)</div><input type="number" id="new-weeks" value="0" min="0" /></div>
+    <button class="btn-add" onclick="addToy()">Add to inventory</button>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="soverlay" id="ov-cfg" onclick="closeCfg()"></div>
+<div class="sheet" id="sh-cfg">
+  <div class="shandle"></div>
+  <div class="stitle">Settings</div>
+  <div class="sbody">
+    <div><div class="flabel">Child 1 name</div><input type="text" id="cfg-n0" placeholder="e.g. Arjun" /></div>
+    <div><div class="flabel">Child 2 name</div><input type="text" id="cfg-n1" placeholder="e.g. Priya" /></div>
+    <button class="btn-add" onclick="saveNames()">Save names</button>
+  </div>
+</div>
+
+<script>
+const AGE = { infant:'Infant 0–12m', toddler:'Toddler 1–3y', preschool:'Preschool 3–5y', school:'School 5+' };
+const WEEKS = 4, MAX = 6, SK = 'toyrot_v3';
+
+let kid = 0, filter = 'all', ageF = '';
+let nextId = 200;
+let names = ['Child 1', 'Child 2'];
+
+const DEFAULTS = [
+  [
+    {id:1,  name:'Shape Sorter Cube',     age:'infant',    cat:'developmental', w:5, um:['5-2026']},
+    {id:2,  name:'Wooden Stacking Rings', age:'infant',    cat:'stacking',      w:3, um:[]},
+    {id:3,  name:'Push & Pull Wagon',     age:'toddler',   cat:'outdoor',       w:6, um:['5-2026']},
+    {id:4,  name:'Mega Bloks Set',        age:'toddler',   cat:'building',      w:2, um:['5-2026']},
+    {id:5,  name:'Jumbo Foam Puzzles',    age:'preschool', cat:'puzzles',       w:7, um:[]},
+    {id:6,  name:'Play Kitchen Set',      age:'preschool', cat:'pretend play',  w:1, um:['5-2026']},
+    {id:7,  name:'Sensory Bin Kit',       age:'infant',    cat:'sensory',       w:9, um:[]},
+    {id:8,  name:'Ride-On Scooter',       age:'toddler',   cat:'outdoor',       w:4, um:['5-2026']},
+  ],
+  [
+    {id:51, name:'Marble Run',            age:'school',    cat:'STEM',          w:8, um:[]},
+    {id:52, name:'Art Supply Kit',        age:'school',    cat:'creative',      w:3, um:['5-2026']},
+    {id:53, name:'Lego Classic Set',      age:'school',    cat:'building',      w:5, um:['5-2026']},
+    {id:54, name:'Board Game Box',        age:'school',    cat:'games',         w:1, um:['5-2026']},
+    {id:55, name:'Science Kit',           age:'school',    cat:'STEM',          w:6, um:[]},
+    {id:56, name:'Origami Set',           age:'preschool', cat:'creative',      w:2, um:['5-2026']},
+    {id:57, name:'Magnetic Tiles',        age:'preschool', cat:'building',      w:7, um:[]},
+  ]
+];
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(SK));
+    if (d) { nextId = d.nextId||200; names = d.names||names; return d.kids; }
+  } catch(e) {}
+  return DEFAULTS.map(k => JSON.parse(JSON.stringify(k)));
+}
+function save() {
+  try { localStorage.setItem(SK, JSON.stringify({kids, nextId, names})); } catch(e) {}
+}
+
+let kids = load();
+const mn = {'5-2026':'May 2026','4-2026':'Apr 2026','3-2026':'Mar 2026','2-2026':'Feb 2026'};
+function getM() { return document.getElementById('month-select').value; }
+function cur() { return kids[kid]; }
+function status(t) { const m=getM(); return t.um.includes(m)?'used':t.w>=WEEKS?'due':'storage'; }
+function usedNow() { return cur().filter(t=>status(t)==='used').length; }
+
+function renderTabs() {
+  document.getElementById('kid-tabs').innerHTML = [0,1].map(k => {
+    const initials = names[k].slice(0,2).toUpperCase();
+    const active = k===kid ? `k${k}` : '';
+    return `<div class="kid-tab ${active}" onclick="switchKid(${k})">
+      <span class="kavatar kavatar-${k}">${initials}</span>
+      <span>${names[k]}</span>
+    </div>`;
+  }).join('');
+}
+
+function switchKid(k) {
+  kid = k; filter = 'all'; ageF = '';
+  document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.age-pill').forEach(b => b.className='age-pill');
+  renderTabs(); render();
+}
+
+function setFilter(f, el) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active'); render();
+}
+function setAge(a, el) {
+  ageF = a;
+  document.querySelectorAll('.age-pill').forEach(b => b.className='age-pill');
+  const cls = {infant:'ai',toddler:'at',preschool:'ap',school:'as'};
+  if (a) el.className = `age-pill ${cls[a]}`;
+  render();
+}
+
+function toggleUsed(id) {
+  const m = getM();
+  const t = cur().find(x=>x.id===id); if (!t) return;
+  if (t.um.includes(m)) {
+    t.um = t.um.filter(x=>x!==m); t.w = Math.max(0, t.w+2);
+  } else {
+    if (usedNow() >= MAX) {
+      const lim = document.getElementById('tip-lim');
+      lim.className='tip lim show';
+      lim.innerHTML=`<strong>Limit reached.</strong> ${names[kid]} already has ${MAX} toys in use. Store one before adding another.`;
+      setTimeout(()=>lim.className='tip lim', 4000); return;
+    }
+    t.um.push(m); t.w = 0;
+  }
+  save(); render();
+}
+
+function removeToy(id) {
+  if (!confirm('Remove this toy?')) return;
+  kids[kid] = cur().filter(t=>t.id!==id); save(); render();
+}
+
+function addToy() {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) { alert('Enter a toy name'); return; }
+  const age = document.getElementById('new-age').value;
+  const cat = document.getElementById('new-cat').value.trim() || 'general';
+  const w = parseInt(document.getElementById('new-weeks').value)||0;
+  cur().push({id:nextId++, name, age, cat, w, um:[]});
+  save();
+  ['new-name','new-cat'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('new-weeks').value='0';
+  closeAdd(); render();
+}
+
+function openAdd() {
+  document.getElementById('add-title').textContent = `Add toy for ${names[kid]}`;
+  document.getElementById('ov-add').classList.add('open');
+  document.getElementById('sh-add').classList.add('open');
+  setTimeout(()=>document.getElementById('new-name').focus(), 300);
+}
+function closeAdd() {
+  document.getElementById('ov-add').classList.remove('open');
+  document.getElementById('sh-add').classList.remove('open');
+}
+function openCfg() {
+  document.getElementById('cfg-n0').value = names[0];
+  document.getElementById('cfg-n1').value = names[1];
+  document.getElementById('ov-cfg').classList.add('open');
+  document.getElementById('sh-cfg').classList.add('open');
+}
+function closeCfg() {
+  document.getElementById('ov-cfg').classList.remove('open');
+  document.getElementById('sh-cfg').classList.remove('open');
+}
+function saveNames() {
+  const n0 = document.getElementById('cfg-n0').value.trim();
+  const n1 = document.getElementById('cfg-n1').value.trim();
+  if (n0) names[0]=n0; if (n1) names[1]=n1;
+  save(); closeCfg(); renderTabs(); render();
+}
+
+function render() {
+  const t = cur();
+  let vis = ageF ? t.filter(x=>x.age===ageF) : [...t];
+  if (filter!=='all') vis = vis.filter(x=>status(x)===filter);
+
+  const used = t.filter(x=>status(x)==='used');
+  const due  = t.filter(x=>status(x)==='due');
+  const stor = t.filter(x=>status(x)==='storage');
+  const n = used.length, full = n>=MAX;
+  const pct = Math.round((n/MAX)*100);
+  const kc = full?'full':`k${kid}`;
+
+  document.getElementById('cap-bar').innerHTML = `
+    <div class="cap-row">
+      <span class="cap-label">${names[kid]}'s toys in use this month</span>
+      <span class="cap-count ${kc}">${n} / ${MAX}</span>
+    </div>
+    <div class="cap-track"><div class="cap-fill ${kc}" style="width:${pct}%"></div></div>
+  `;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-val">${t.length}</div><div class="stat-label">Total</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--green)">${n}</div><div class="stat-label">In use</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--amber)">${due.length}</div><div class="stat-label">Rotate in</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--text3)">${stor.length}</div><div class="stat-label">Storage</div></div>
+  `;
+
+  const tr = document.getElementById('tip-rot');
+  if (due.length>0) {
+    tr.className='tip rot show';
+    const ns = due.slice(0,2).map(x=>x.name).join(', ');
+    tr.innerHTML=`<strong>Time to rotate:</strong> ${ns}${due.length>2?` + ${due.length-2} more`:''} — 4+ weeks out.`;
+  } else { tr.className='tip rot'; }
+
+  const list = document.getElementById('toy-list');
+  if (!vis.length) { list.innerHTML='<div class="empty">No toys match this filter.</div>'; return; }
+
+  list.innerHTML = vis.map(toy => {
+    const s = status(toy), isU = s==='used', isDue = s==='due';
+    const canUse = isU || !full;
+    return `<div class="toy-card ${s}">
+      <div class="toy-top">
+        <div>
+          <div class="toy-name">${toy.name}${isDue?'<span class="rlabel">ROTATE IN</span>':''}</div>
+          <div class="toy-cat">${toy.cat} · ${toy.w}w in rotation</div>
+        </div>
+        <span class="age-badge ${toy.age}">${AGE[toy.age]}</span>
+      </div>
+      <div class="toy-bot">
+        <span class="toy-status">
+          <span class="dot ${isU?'d-used':isDue?'d-due':'d-stor'}"></span>
+          ${isU?'In use this month':isDue?'Ready to rotate in':'In storage'}
+        </span>
+        <div class="toy-acts">
+          <button class="btn-sm ${!isU&&canUse?'btn-use':''}"
+            onclick="toggleUsed(${toy.id})"
+            ${!isU&&!canUse?'disabled style="opacity:0.38;cursor:not-allowed"':''}>
+            ${isU?'Store':'Use'}
+          </button>
+          <button class="btn-sm btn-ico" onclick="removeToy(${toy.id})" aria-label="Remove">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderTabs(); render();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Toy Rotation" />
+<meta name="theme-color" content="#ffffff" />
+<title>Toy Rotation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --bg: #f9f7f4;
