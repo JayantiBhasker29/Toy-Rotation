@@ -1,179 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Toy Rotation" />
-<meta name="theme-color" content="#ffffff" />
-<title>Toy Rotation</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Toy Rotation"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Toy Rotation 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f9f7f4; --surface: #ffffff; --surface2: #f2efe9;
-    --border: #e4e0d8; --border2: #d0ccc0;
-    --text: #1a1816; --text2: #6b6660; --text3: #9e9990;
-    --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #0F6E56;
-    --amber: #BA7517; --amber-light: #FAEEDA; --amber-dark: #633806;
-    --blue: #185FA5; --blue-light: #E6F1FB; --blue-dark: #0C447C;
-    --purple: #534AB7; --purple-light: #EEEDFE; --purple-dark: #3C3489;
-    --red: #A32D2D; --red-light: #FCEBEB;
-    --k0: #185FA5; --k0-light: #E6F1FB; --k0-dark: #0C447C;
-    --k1: #993556; --k1-light: #FBEAF0; --k1-dark: #4B1528;
-    --radius: 12px; --radius-sm: 8px; --radius-pill: 20px;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#f9f7f4; --sur:#ffffff; --sur2:#f2efe9;
+  --bd:#e4e0d8; --bd2:#d0ccc0;
+  --tx:#1a1816; --tx2:#6b6660; --tx3:#9e9990;
+  --gr:#1D9E75; --grl:#E1F5EE; --grd:#0F6E56;
+  --am:#BA7517; --aml:#FAEEDA; --amd:#633806;
+  --bl:#185FA5; --bll:#E6F1FB; --bld:#0C447C;
+  --pu:#534AB7; --pul:#EEEDFE; --pud:#3C3489;
+  --rd:#A32D2D; --rdl:#FCEBEB;
+  --k0:#185FA5; --k0l:#E6F1FB; --k0d:#0C447C;
+  --k1:#993556; --k1l:#FBEAF0; --k1d:#4B1528;
+  --r:12px; --rsm:8px; --rpill:20px;
+  --st:env(safe-area-inset-top,0px);
+  --sb:env(safe-area-inset-bottom,0px);
+}
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--tx); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: calc(var(--safe-top) + 14px) 16px 0; position: sticky; top: 0; z-index: 100; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .app-title { font-family: 'DM Serif Display', serif; font-size: 21px; color: var(--text); letter-spacing: -0.3px; }
-  .month-sel { font-size: 13px; font-weight: 500; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; appearance: none; -webkit-appearance: none; }
+/* ── HEADER ── */
+.hdr { background:var(--sur); border-bottom:1px solid var(--bd); padding:calc(var(--st)+12px) 16px 0; position:sticky; top:0; z-index:100; }
+.hdr-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.app-title { font-family:'DM Serif Display',serif; font-size:20px; color:var(--tx); letter-spacing:-0.3px; }
+.yr-badge { font-size:12px; font-weight:600; color:var(--tx3); background:var(--sur2); border:1px solid var(--bd); border-radius:6px; padding:4px 9px; }
 
-  .kid-tabs { display: flex; }
-  .kid-tab { flex: 1; padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 2.5px solid transparent; color: var(--text3); transition: all 0.15s; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; gap: 7px; }
-  .kid-tab.k0 { color: var(--k0); border-bottom-color: var(--k0); }
-  .kid-tab.k1 { color: var(--k1); border-bottom-color: var(--k1); }
-  .kavatar { width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .kavatar-0 { background: var(--k0-light); color: var(--k0-dark); }
-  .kavatar-1 { background: var(--k1-light); color: var(--k1-dark); }
+/* ── KID TABS ── */
+.kid-tabs { display:flex; }
+.kid-tab { flex:1; padding:9px 6px; text-align:center; font-size:13px; font-weight:500; cursor:pointer; border-bottom:2.5px solid transparent; color:var(--tx3); -webkit-tap-highlight-color:transparent; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.15s; }
+.kid-tab.k0 { color:var(--k0); border-bottom-color:var(--k0); }
+.kid-tab.k1 { color:var(--k1); border-bottom-color:var(--k1); }
+.kav { width:24px; height:24px; border-radius:50%; font-size:10px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.kav0 { background:var(--k0l); color:var(--k0d); }
+.kav1 { background:var(--k1l); color:var(--k1d); }
 
-  .cap-bar { padding: 10px 16px 10px; background: var(--surface); border-bottom: 1px solid var(--border); }
-  .cap-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-  .cap-label { font-size: 12px; color: var(--text2); }
-  .cap-count { font-size: 12px; font-weight: 600; }
-  .cap-count.k0 { color: var(--k0); }
-  .cap-count.k1 { color: var(--k1); }
-  .cap-count.full { color: var(--red); }
-  .cap-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .cap-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-  .cap-fill.k0 { background: var(--k0); }
-  .cap-fill.k1 { background: var(--k1); }
-  .cap-fill.full { background: var(--red); }
+/* ── MONTH PILLS ── */
+.month-row { display:flex; gap:6px; padding:10px 16px 8px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; background:var(--sur); border-bottom:1px solid var(--bd); }
+.month-row::-webkit-scrollbar { display:none; }
+.mpill { flex-shrink:0; font-size:12px; font-weight:500; padding:5px 11px; border-radius:var(--rpill); border:1px solid var(--bd2); background:transparent; color:var(--tx2); cursor:pointer; -webkit-tap-highlight-color:transparent; transition:all 0.15s; }
+.mpill.cur { background:var(--tx); color:var(--sur); border-color:var(--tx); }
+.mpill.future { color:var(--tx3); border-style:dashed; }
 
-  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
-  .stat { text-align: center; }
-  .stat-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
-  .stat-label { font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.2; }
+/* ── WEEK TABS ── */
+.week-row { display:flex; gap:6px; padding:8px 16px; background:var(--bg); border-bottom:1px solid var(--bd); }
+.wpill { flex:1; font-size:12px; font-weight:500; padding:6px 4px; border-radius:var(--rsm); border:1px solid var(--bd); background:var(--sur); color:var(--tx2); cursor:pointer; text-align:center; -webkit-tap-highlight-color:transparent; transition:all 0.15s; }
+.wpill.wactive { background:var(--tx); color:var(--sur); border-color:var(--tx); }
+.wpill.wused { background:var(--grl); color:var(--grd); border-color:var(--gr); }
 
-  .filters { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: var(--bg); }
-  .filters::-webkit-scrollbar { display: none; }
-  .filter-btn { white-space: nowrap; font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-pill); border: 1px solid var(--border2); background: var(--surface); color: var(--text2); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.15s; flex-shrink: 0; }
-  .filter-btn.active { background: var(--text); color: var(--surface); border-color: var(--text); }
+/* ── CAPACITY ── */
+.cap { padding:10px 16px; background:var(--sur); border-bottom:1px solid var(--bd); }
+.cap-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+.cap-label { font-size:12px; color:var(--tx2); }
+.cap-count { font-size:12px; font-weight:600; }
+.cap-count.ck0 { color:var(--k0); } .cap-count.ck1 { color:var(--k1); } .cap-count.full { color:var(--rd); }
+.cap-track { height:5px; background:var(--bd); border-radius:3px; overflow:hidden; }
+.cap-fill { height:100%; border-radius:3px; transition:width 0.3s; }
+.cap-fill.ck0 { background:var(--k0); } .cap-fill.ck1 { background:var(--k1); } .cap-fill.full { background:var(--rd); }
 
-  .age-row { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .age-row::-webkit-scrollbar { display: none; }
-  .age-pill { white-space: nowrap; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
-  .age-pill.ai { background: var(--blue-light);   color: var(--blue-dark);   border-color: var(--blue); }
-  .age-pill.at { background: var(--green-light);  color: var(--green-dark);  border-color: var(--green); }
-  .age-pill.ap { background: var(--amber-light);  color: var(--amber-dark);  border-color: var(--amber); }
-  .age-pill.as { background: var(--purple-light); color: var(--purple-dark); border-color: var(--purple); }
+/* ── STATS ── */
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:10px 16px; background:var(--sur); border-bottom:1px solid var(--bd); }
+.stat { text-align:center; }
+.stat-v { font-size:18px; font-weight:600; color:var(--tx); line-height:1; }
+.stat-l { font-size:10px; color:var(--tx3); margin-top:2px; }
 
-  .tip { margin: 0 16px 12px; border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; line-height: 1.5; display: none; }
-  .tip.show { display: block; }
-  .tip.rot { background: var(--amber-light); border: 1px solid #EF9F27; color: var(--amber-dark); }
-  .tip.lim { background: var(--red-light); border: 1px solid #E24B4A; color: var(--red); }
-  .tip strong { font-weight: 600; }
+/* ── FILTERS ── */
+.filters { display:flex; gap:7px; padding:10px 16px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.filters::-webkit-scrollbar { display:none; }
+.fbtn { white-space:nowrap; font-size:12px; font-weight:500; padding:6px 12px; border-radius:var(--rpill); border:1px solid var(--bd2); background:var(--sur); color:var(--tx2); cursor:pointer; -webkit-tap-highlight-color:transparent; flex-shrink:0; transition:all 0.15s; }
+.fbtn.active { background:var(--tx); color:var(--sur); border-color:var(--tx); }
 
-  .toy-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-  .toy-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; }
-  .toy-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-  .toy-card.used::before { background: var(--green); }
-  .toy-card.due::before  { background: var(--amber); }
-  .toy-card.storage::before { background: var(--border2); }
-  .toy-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-  .toy-name { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3; }
-  .toy-cat { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .age-badge { flex-shrink: 0; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: var(--radius-pill); white-space: nowrap; }
-  .age-badge.infant    { background: var(--blue-light);    color: var(--blue-dark); }
-  .age-badge.toddler   { background: var(--green-light);   color: var(--green-dark); }
-  .age-badge.preschool { background: var(--amber-light);   color: var(--amber-dark); }
-  .age-badge.school    { background: var(--purple-light);  color: var(--purple-dark); }
-  .toy-bot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-  .toy-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; }
-  .d-used { background: var(--green); }
-  .d-due  { background: var(--amber); }
-  .d-stor { background: var(--border2); }
-  .toy-acts { display: flex; gap: 6px; }
-  .btn-sm { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all 0.12s; }
-  .btn-sm:active { transform: scale(0.96); }
-  .btn-use { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
-  .btn-ico { padding: 5px 8px; color: var(--text3); }
-  .rlabel { display: inline-block; font-size: 10px; font-weight: 600; background: var(--amber); color: #fff; border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
-  .empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 14px; }
+/* ── AGE ROW ── */
+.age-row { display:flex; gap:5px; padding:0 16px 10px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.age-row::-webkit-scrollbar { display:none; }
+.apill { white-space:nowrap; font-size:11px; font-weight:500; padding:4px 9px; border-radius:var(--rpill); border:1px solid var(--bd); background:var(--sur); color:var(--tx2); cursor:pointer; flex-shrink:0; -webkit-tap-highlight-color:transparent; }
+.apill.ai { background:var(--bll); color:var(--bld); border-color:var(--bl); }
+.apill.at { background:var(--grl); color:var(--grd); border-color:var(--gr); }
+.apill.ap { background:var(--aml); color:var(--amd); border-color:var(--am); }
+.apill.as { background:var(--pul); color:var(--pud); border-color:var(--pu); }
 
-  .fab { position: fixed; bottom: calc(var(--safe-bottom) + 20px); right: 20px; width: 52px; height: 52px; border-radius: 50%; background: var(--text); color: var(--surface); font-size: 28px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(0,0,0,0.18); z-index: 200; -webkit-tap-highlight-color: transparent; transition: transform 0.15s; }
-  .fab:active { transform: scale(0.93); }
-  .cfg-btn { position: fixed; bottom: calc(var(--safe-bottom) + 22px); left: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); color: var(--text2); font-size: 20px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 200; -webkit-tap-highlight-color: transparent; }
+/* ── TIPS ── */
+.tip { margin:0 16px 10px; border-radius:var(--rsm); padding:9px 11px; font-size:13px; line-height:1.5; display:none; }
+.tip.show { display:block; }
+.tip.rot { background:var(--aml); border:1px solid #EF9F27; color:var(--amd); }
+.tip.lim { background:var(--rdl); border:1px solid #E24B4A; color:var(--rd); }
+.tip strong { font-weight:600; }
 
-  .soverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 300; }
-  .soverlay.open { display: block; }
-  .sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 20px 20px 0 0; padding: 0 0 calc(var(--safe-bottom) + 20px); z-index: 301; transform: translateY(100%); transition: transform 0.28s cubic-bezier(0.32,0.72,0,1); }
-  .sheet.open { transform: translateY(0); }
-  .shandle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 12px auto 16px; }
-  .stitle { font-size: 17px; font-weight: 600; color: var(--text); padding: 0 20px 16px; }
-  .sbody { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
-  .flabel { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
-  .sbody input, .sbody select { width: 100%; font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); appearance: none; -webkit-appearance: none; }
-  .sbody input:focus, .sbody select:focus { outline: none; border-color: var(--text); }
-  .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-add { width: 100%; padding: 14px; margin-top: 8px; background: var(--text); color: var(--surface); font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif; border: none; border-radius: var(--radius); cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  .btn-add:active { transform: scale(0.98); }
-  .spacer { height: 90px; }
+/* ── TOY CARDS ── */
+.toy-list { padding:0 16px; display:flex; flex-direction:column; gap:9px; }
+.tcard { background:var(--sur); border:1px solid var(--bd); border-radius:var(--r); padding:13px; position:relative; overflow:hidden; }
+.tcard::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:0; }
+.tcard.used::before { background:var(--gr); }
+.tcard.due::before  { background:var(--am); }
+.tcard.storage::before { background:var(--bd2); }
+.ttop { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.tname { font-size:14px; font-weight:500; color:var(--tx); line-height:1.3; }
+.tcat  { font-size:12px; color:var(--tx3); margin-top:2px; }
+.abadge { flex-shrink:0; font-size:10px; font-weight:500; padding:2px 7px; border-radius:var(--rpill); white-space:nowrap; }
+.abadge.infant    { background:var(--bll); color:var(--bld); }
+.abadge.toddler   { background:var(--grl); color:var(--grd); }
+.abadge.preschool { background:var(--aml); color:var(--amd); }
+.abadge.school    { background:var(--pul); color:var(--pud); }
+.tbot { display:flex; align-items:center; justify-content:space-between; margin-top:9px; }
+.tstatus { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--tx2); }
+.dot { width:7px; height:7px; border-radius:50%; }
+.du { background:var(--gr); } .dd { background:var(--am); } .ds { background:var(--bd2); }
+.tacts { display:flex; gap:5px; }
+.bsm { font-size:12px; font-weight:500; padding:5px 11px; border-radius:var(--rsm); border:1px solid var(--bd2); background:var(--bg); color:var(--tx2); cursor:pointer; -webkit-tap-highlight-color:transparent; transition:all 0.12s; }
+.bsm:active { transform:scale(0.96); }
+.buse { border-color:var(--gr); color:var(--grd); background:var(--grl); }
+.bico { padding:5px 8px; color:var(--tx3); }
+.rlabel { display:inline-block; font-size:9px; font-weight:600; background:var(--am); color:#fff; border-radius:4px; padding:1px 5px; margin-left:5px; vertical-align:middle; }
+.wlabel { display:inline-block; font-size:9px; font-weight:600; background:var(--k0); color:#fff; border-radius:4px; padding:1px 5px; margin-left:5px; vertical-align:middle; }
+.wlabel.k1 { background:var(--k1); }
+.week-streak { font-size:11px; color:var(--tx3); margin-top:3px; }
+.week-streak.warn { color:var(--am); }
+.empty { text-align:center; padding:36px 20px; color:var(--tx3); font-size:14px; }
+
+/* ── MONTH SUMMARY MINI ── */
+.month-mini { margin:0 16px 10px; background:var(--sur); border:1px solid var(--bd); border-radius:var(--rsm); padding:10px 12px; }
+.mm-title { font-size:11px; font-weight:500; color:var(--tx3); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.6px; }
+.mm-weeks { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; }
+.mm-week { background:var(--bg); border-radius:6px; padding:5px 4px; text-align:center; border:1px solid var(--bd); }
+.mm-week.mw-used { background:var(--grl); border-color:var(--gr); }
+.mm-week.mw-cur  { background:var(--tx); border-color:var(--tx); }
+.mm-wlabel { font-size:10px; font-weight:500; color:var(--tx2); }
+.mm-week.mw-used .mm-wlabel { color:var(--grd); }
+.mm-week.mw-cur  .mm-wlabel { color:#fff; }
+.mm-wcount { font-size:9px; color:var(--tx3); margin-top:1px; }
+.mm-week.mw-used .mm-wcount { color:var(--gr); }
+.mm-week.mw-cur  .mm-wcount { color:rgba(255,255,255,0.7); }
+
+/* ── FAB & CFG ── */
+.fab { position:fixed; bottom:calc(var(--sb)+20px); right:20px; width:52px; height:52px; border-radius:50%; background:var(--tx); color:var(--sur); font-size:28px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,0.18); z-index:200; -webkit-tap-highlight-color:transparent; }
+.fab:active { transform:scale(0.93); }
+.cfg-btn { position:fixed; bottom:calc(var(--sb)+22px); left:20px; width:48px; height:48px; border-radius:50%; background:var(--sur); color:var(--tx2); font-size:20px; border:1px solid var(--bd); cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:200; -webkit-tap-highlight-color:transparent; }
+
+/* ── SHEETS ── */
+.sov { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:300; }
+.sov.open { display:block; }
+.sheet { position:fixed; bottom:0; left:0; right:0; background:var(--sur); border-radius:20px 20px 0 0; padding:0 0 calc(var(--sb)+20px); z-index:301; transform:translateY(100%); transition:transform 0.28s cubic-bezier(0.32,0.72,0,1); max-height:90vh; overflow-y:auto; }
+.sheet.open { transform:translateY(0); }
+.shandle { width:36px; height:4px; background:var(--bd2); border-radius:2px; margin:12px auto 14px; }
+.stitle { font-size:16px; font-weight:600; color:var(--tx); padding:0 20px 14px; }
+.sbody { padding:0 20px; display:flex; flex-direction:column; gap:10px; }
+.flabel { font-size:12px; font-weight:500; color:var(--tx2); margin-bottom:4px; }
+.sbody input,.sbody select { width:100%; font-size:15px; font-family:'DM Sans',sans-serif; padding:11px 13px; border:1px solid var(--bd); border-radius:var(--rsm); background:var(--sur2); color:var(--tx); appearance:none; -webkit-appearance:none; }
+.sbody input:focus,.sbody select:focus { outline:none; border-color:var(--tx); }
+.frow { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.badd { width:100%; padding:13px; margin-top:8px; background:var(--tx); color:var(--sur); font-size:15px; font-weight:600; font-family:'DM Sans',sans-serif; border:none; border-radius:var(--r); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.badd:active { transform:scale(0.98); }
+.spacer { height:90px; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
+<div class="hdr">
+  <div class="hdr-top">
     <div class="app-title">🧸 Toy Rotation</div>
-    <select class="month-sel" id="month-select" onchange="render()">
-      <option value="5-2026">May 2026</option>
-      <option value="4-2026">Apr 2026</option>
-      <option value="3-2026">Mar 2026</option>
-      <option value="2-2026">Feb 2026</option>
-    </select>
+    <span class="yr-badge">2026</span>
   </div>
   <div class="kid-tabs" id="kid-tabs"></div>
 </div>
 
-<div class="cap-bar" id="cap-bar"></div>
+<div class="month-row" id="month-row"></div>
+<div class="week-row" id="week-row"></div>
+
+<div class="cap" id="cap"></div>
 <div class="stats" id="stats"></div>
 
 <div class="filters">
-  <button class="filter-btn active" onclick="setFilter('all',this)">All toys</button>
-  <button class="filter-btn" onclick="setFilter('used',this)">In use</button>
-  <button class="filter-btn" onclick="setFilter('due',this)">Rotate in ⚠️</button>
-  <button class="filter-btn" onclick="setFilter('storage',this)">In storage</button>
+  <button class="fbtn active" onclick="setFilter('all',this)">All toys</button>
+  <button class="fbtn" onclick="setFilter('used',this)">In use</button>
+  <button class="fbtn" onclick="setFilter('due',this)">Rotate in ⚠️</button>
+  <button class="fbtn" onclick="setFilter('storage',this)">In storage</button>
 </div>
 <div class="age-row">
-  <button class="age-pill" onclick="setAge('',this)">All ages</button>
-  <button class="age-pill" onclick="setAge('infant',this)">Infant 0–12m</button>
-  <button class="age-pill" onclick="setAge('toddler',this)">Toddler 1–3y</button>
-  <button class="age-pill" onclick="setAge('preschool',this)">Preschool 3–5y</button>
-  <button class="age-pill" onclick="setAge('school',this)">School 5+</button>
+  <button class="apill" onclick="setAge('',this)">All ages</button>
+  <button class="apill" onclick="setAge('infant',this)">Infant 0–12m</button>
+  <button class="apill" onclick="setAge('toddler',this)">Toddler 1–3y</button>
+  <button class="apill" onclick="setAge('preschool',this)">Preschool 3–5y</button>
+  <button class="apill" onclick="setAge('school',this)">School 5+</button>
 </div>
+
+<div class="month-mini" id="month-mini"></div>
 
 <div class="tip rot" id="tip-rot"></div>
 <div class="tip lim" id="tip-lim"></div>
+
 <div class="toy-list" id="toy-list"></div>
 <div class="spacer"></div>
 
 <button class="cfg-btn" onclick="openCfg()" aria-label="Settings">⚙️</button>
 <button class="fab" onclick="openAdd()" aria-label="Add toy">+</button>
 
-<!-- Add toy -->
-<div class="soverlay" id="ov-add" onclick="closeAdd()"></div>
+<!-- Add toy sheet -->
+<div class="sov" id="ov-add" onclick="closeAdd()"></div>
 <div class="sheet" id="sh-add">
   <div class="shandle"></div>
   <div class="stitle" id="add-title">Add a toy</div>
   <div class="sbody">
-    <div><div class="flabel">Toy name</div><input type="text" id="new-name" placeholder="e.g. Mega Bloks set" /></div>
+    <div><div class="flabel">Toy name</div><input type="text" id="new-name" placeholder="e.g. Mega Bloks set"/></div>
     <div class="frow">
       <div><div class="flabel">Age group</div>
         <select id="new-age">
@@ -183,52 +218,82 @@
           <option value="school">School age 5+</option>
         </select>
       </div>
-      <div><div class="flabel">Category</div><input type="text" id="new-cat" placeholder="e.g. puzzles" /></div>
+      <div><div class="flabel">Category</div><input type="text" id="new-cat" placeholder="e.g. puzzles"/></div>
     </div>
-    <div><div class="flabel">Weeks in rotation (0 if new)</div><input type="number" id="new-weeks" value="0" min="0" /></div>
-    <button class="btn-add" onclick="addToy()">Add to inventory</button>
+    <button class="badd" onclick="addToy()">Add to inventory</button>
   </div>
 </div>
 
-<!-- Settings -->
-<div class="soverlay" id="ov-cfg" onclick="closeCfg()"></div>
+<!-- Settings sheet -->
+<div class="sov" id="ov-cfg" onclick="closeCfg()"></div>
 <div class="sheet" id="sh-cfg">
   <div class="shandle"></div>
   <div class="stitle">Settings</div>
   <div class="sbody">
-    <div><div class="flabel">Child 1 name</div><input type="text" id="cfg-n0" placeholder="e.g. Arjun" /></div>
-    <div><div class="flabel">Child 2 name</div><input type="text" id="cfg-n1" placeholder="e.g. Priya" /></div>
-    <button class="btn-add" onclick="saveNames()">Save names</button>
+    <div><div class="flabel">Child 1 name</div><input type="text" id="cfg-n0" placeholder="e.g. Arjun"/></div>
+    <div><div class="flabel">Child 2 name</div><input type="text" id="cfg-n1" placeholder="e.g. Priya"/></div>
+    <button class="badd" onclick="saveNames()">Save names</button>
   </div>
 </div>
 
 <script>
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const AGE = { infant:'Infant 0–12m', toddler:'Toddler 1–3y', preschool:'Preschool 3–5y', school:'School 5+' };
-const WEEKS = 4, MAX = 6, SK = 'toyrot_v3';
+const MAX = 6, SK = 'toyrot_v4', YEAR = 2026;
+const TODAY_MONTH = 5; // May = 5
+const TODAY_WEEK  = 2; // current week within May
 
 let kid = 0, filter = 'all', ageF = '';
+let selMonth = TODAY_MONTH, selWeek = TODAY_WEEK;
 let nextId = 200;
-let names = ['Child 1', 'Child 2'];
+let names = ['Child 1','Child 2'];
+
+function wk(month, week) { return `${YEAR}-${month}-${week}`; }
+function wkIdx(month, week) { return (month - 1) * 4 + week; }
+
+function consecutiveWeeks(toy, upToMonth, upToWeek) {
+  let count = 0;
+  let idx = wkIdx(upToMonth, upToWeek);
+  while (idx > 0 && count <= 8) {
+    const m = Math.ceil(idx / 4);
+    const w = idx - (m - 1) * 4;
+    if (w < 1 || w > 4) { idx--; continue; }
+    if (toy.uw && toy.uw.includes(wk(m, w))) { count++; idx--; }
+    else break;
+  }
+  return count;
+}
+
+function status(toy) {
+  const key = wk(selMonth, selWeek);
+  const used = toy.uw && toy.uw.includes(key);
+  if (used) return 'used';
+  const streak = consecutiveWeeks(toy, selMonth, selWeek);
+  if (streak >= 4) return 'due';
+  return 'storage';
+}
+
+function usedNow() { return cur().filter(t => status(t) === 'used').length; }
 
 const DEFAULTS = [
   [
-    {id:1,  name:'Shape Sorter Cube',     age:'infant',    cat:'developmental', w:5, um:['5-2026']},
-    {id:2,  name:'Wooden Stacking Rings', age:'infant',    cat:'stacking',      w:3, um:[]},
-    {id:3,  name:'Push & Pull Wagon',     age:'toddler',   cat:'outdoor',       w:6, um:['5-2026']},
-    {id:4,  name:'Mega Bloks Set',        age:'toddler',   cat:'building',      w:2, um:['5-2026']},
-    {id:5,  name:'Jumbo Foam Puzzles',    age:'preschool', cat:'puzzles',       w:7, um:[]},
-    {id:6,  name:'Play Kitchen Set',      age:'preschool', cat:'pretend play',  w:1, um:['5-2026']},
-    {id:7,  name:'Sensory Bin Kit',       age:'infant',    cat:'sensory',       w:9, um:[]},
-    {id:8,  name:'Ride-On Scooter',       age:'toddler',   cat:'outdoor',       w:4, um:['5-2026']},
+    {id:1,  name:'Shape Sorter Cube',     age:'infant',    cat:'developmental', uw:['2026-5-1','2026-5-2']},
+    {id:2,  name:'Wooden Stacking Rings', age:'infant',    cat:'stacking',      uw:['2026-4-3','2026-4-4','2026-5-1','2026-5-2']},
+    {id:3,  name:'Push & Pull Wagon',     age:'toddler',   cat:'outdoor',       uw:['2026-5-1','2026-5-2']},
+    {id:4,  name:'Mega Bloks Set',        age:'toddler',   cat:'building',      uw:['2026-3-3','2026-3-4','2026-4-1','2026-4-2','2026-4-3','2026-4-4']},
+    {id:5,  name:'Jumbo Foam Puzzles',    age:'preschool', cat:'puzzles',       uw:['2026-4-1','2026-4-2']},
+    {id:6,  name:'Play Kitchen Set',      age:'preschool', cat:'pretend play',  uw:['2026-5-1']},
+    {id:7,  name:'Sensory Bin Kit',       age:'infant',    cat:'sensory',       uw:[]},
+    {id:8,  name:'Ride-On Scooter',       age:'toddler',   cat:'outdoor',       uw:['2026-4-2','2026-4-3','2026-4-4','2026-5-1','2026-5-2']},
   ],
   [
-    {id:51, name:'Marble Run',            age:'school',    cat:'STEM',          w:8, um:[]},
-    {id:52, name:'Art Supply Kit',        age:'school',    cat:'creative',      w:3, um:['5-2026']},
-    {id:53, name:'Lego Classic Set',      age:'school',    cat:'building',      w:5, um:['5-2026']},
-    {id:54, name:'Board Game Box',        age:'school',    cat:'games',         w:1, um:['5-2026']},
-    {id:55, name:'Science Kit',           age:'school',    cat:'STEM',          w:6, um:[]},
-    {id:56, name:'Origami Set',           age:'preschool', cat:'creative',      w:2, um:['5-2026']},
-    {id:57, name:'Magnetic Tiles',        age:'preschool', cat:'building',      w:7, um:[]},
+    {id:51, name:'Marble Run',            age:'school',    cat:'STEM',          uw:['2026-5-1','2026-5-2']},
+    {id:52, name:'Art Supply Kit',        age:'school',    cat:'creative',      uw:['2026-3-1','2026-3-2','2026-3-3','2026-3-4','2026-4-1']},
+    {id:53, name:'Lego Classic Set',      age:'school',    cat:'building',      uw:['2026-5-2']},
+    {id:54, name:'Board Game Box',        age:'school',    cat:'games',         uw:['2026-5-1','2026-5-2']},
+    {id:55, name:'Science Kit',           age:'school',    cat:'STEM',          uw:[]},
+    {id:56, name:'Origami Set',           age:'preschool', cat:'creative',      uw:['2026-4-3','2026-4-4','2026-5-1','2026-5-2']},
+    {id:57, name:'Magnetic Tiles',        age:'preschool', cat:'building',      uw:[]},
   ]
 ];
 
@@ -244,63 +309,53 @@ function save() {
 }
 
 let kids = load();
-const mn = {'5-2026':'May 2026','4-2026':'Apr 2026','3-2026':'Mar 2026','2-2026':'Feb 2026'};
-function getM() { return document.getElementById('month-select').value; }
 function cur() { return kids[kid]; }
-function status(t) { const m=getM(); return t.um.includes(m)?'used':t.w>=WEEKS?'due':'storage'; }
-function usedNow() { return cur().filter(t=>status(t)==='used').length; }
 
-function renderTabs() {
-  document.getElementById('kid-tabs').innerHTML = [0,1].map(k => {
-    const initials = names[k].slice(0,2).toUpperCase();
-    const active = k===kid ? `k${k}` : '';
-    return `<div class="kid-tab ${active}" onclick="switchKid(${k})">
-      <span class="kavatar kavatar-${k}">${initials}</span>
-      <span>${names[k]}</span>
-    </div>`;
-  }).join('');
-}
-
-function switchKid(k) {
+function setKid(k) {
   kid = k; filter = 'all'; ageF = '';
-  document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i===0));
-  document.querySelectorAll('.age-pill').forEach(b => b.className='age-pill');
+  document.querySelectorAll('.fbtn').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.apill').forEach(b => b.className='apill');
   renderTabs(); render();
 }
 
-function setFilter(f, el) {
-  filter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active'); render();
+function setMonth(m) {
+  selMonth = m;
+  // Reset to week 1 when switching months, or current week if current month
+  selWeek = (m === TODAY_MONTH) ? TODAY_WEEK : 1;
+  renderMonthRow(); renderWeekRow(); render();
 }
+
+function setWeek(w) { selWeek = w; renderWeekRow(); render(); }
+function setFilter(f, el) { filter = f; document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(); }
 function setAge(a, el) {
   ageF = a;
-  document.querySelectorAll('.age-pill').forEach(b => b.className='age-pill');
+  document.querySelectorAll('.apill').forEach(b => b.className='apill');
   const cls = {infant:'ai',toddler:'at',preschool:'ap',school:'as'};
-  if (a) el.className = `age-pill ${cls[a]}`;
+  if (a) el.className = `apill ${cls[a]}`;
   render();
 }
 
 function toggleUsed(id) {
-  const m = getM();
-  const t = cur().find(x=>x.id===id); if (!t) return;
-  if (t.um.includes(m)) {
-    t.um = t.um.filter(x=>x!==m); t.w = Math.max(0, t.w+2);
+  const key = wk(selMonth, selWeek);
+  const toy = cur().find(t => t.id === id); if (!toy) return;
+  if (!toy.uw) toy.uw = [];
+  if (toy.uw.includes(key)) {
+    toy.uw = toy.uw.filter(x => x !== key);
   } else {
     if (usedNow() >= MAX) {
-      const lim = document.getElementById('tip-lim');
-      lim.className='tip lim show';
-      lim.innerHTML=`<strong>Limit reached.</strong> ${names[kid]} already has ${MAX} toys in use. Store one before adding another.`;
-      setTimeout(()=>lim.className='tip lim', 4000); return;
+      const el = document.getElementById('tip-lim');
+      el.className='tip lim show';
+      el.innerHTML=`<strong>Limit reached.</strong> ${names[kid]} already has ${MAX} toys in use this week. Store one first.`;
+      setTimeout(()=>el.className='tip lim', 4000); return;
     }
-    t.um.push(m); t.w = 0;
+    toy.uw.push(key);
   }
   save(); render();
 }
 
 function removeToy(id) {
-  if (!confirm('Remove this toy?')) return;
-  kids[kid] = cur().filter(t=>t.id!==id); save(); render();
+  if (!confirm('Remove this toy from inventory?')) return;
+  kids[kid] = cur().filter(t => t.id !== id); save(); render();
 }
 
 function addToy() {
@@ -308,11 +363,10 @@ function addToy() {
   if (!name) { alert('Enter a toy name'); return; }
   const age = document.getElementById('new-age').value;
   const cat = document.getElementById('new-cat').value.trim() || 'general';
-  const w = parseInt(document.getElementById('new-weeks').value)||0;
-  cur().push({id:nextId++, name, age, cat, w, um:[]});
+  cur().push({id:nextId++, name, age, cat, uw:[]});
   save();
-  ['new-name','new-cat'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('new-weeks').value='0';
+  document.getElementById('new-name').value='';
+  document.getElementById('new-cat').value='';
   closeAdd(); render();
 }
 
@@ -322,20 +376,14 @@ function openAdd() {
   document.getElementById('sh-add').classList.add('open');
   setTimeout(()=>document.getElementById('new-name').focus(), 300);
 }
-function closeAdd() {
-  document.getElementById('ov-add').classList.remove('open');
-  document.getElementById('sh-add').classList.remove('open');
-}
+function closeAdd() { document.getElementById('ov-add').classList.remove('open'); document.getElementById('sh-add').classList.remove('open'); }
 function openCfg() {
   document.getElementById('cfg-n0').value = names[0];
   document.getElementById('cfg-n1').value = names[1];
   document.getElementById('ov-cfg').classList.add('open');
   document.getElementById('sh-cfg').classList.add('open');
 }
-function closeCfg() {
-  document.getElementById('ov-cfg').classList.remove('open');
-  document.getElementById('sh-cfg').classList.remove('open');
-}
+function closeCfg() { document.getElementById('ov-cfg').classList.remove('open'); document.getElementById('sh-cfg').classList.remove('open'); }
 function saveNames() {
   const n0 = document.getElementById('cfg-n0').value.trim();
   const n1 = document.getElementById('cfg-n1').value.trim();
@@ -343,73 +391,128 @@ function saveNames() {
   save(); closeCfg(); renderTabs(); render();
 }
 
+function renderTabs() {
+  document.getElementById('kid-tabs').innerHTML = [0,1].map(k => {
+    const init = names[k].slice(0,2).toUpperCase();
+    return `<div class="kid-tab ${k===kid?'k'+k:''}" onclick="setKid(${k})">
+      <span class="kav kav${k}">${init}</span><span>${names[k]}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderMonthRow() {
+  document.getElementById('month-row').innerHTML = MONTHS.map((m, i) => {
+    const mn = i + 1;
+    const isCur = mn === selMonth;
+    const isFuture = mn > TODAY_MONTH;
+    return `<button class="mpill ${isCur?'cur':''} ${isFuture?'future':''}" onclick="setMonth(${mn})">${m}</button>`;
+  }).join('');
+}
+
+function renderWeekRow() {
+  // How many toys used in each week of this month
+  document.getElementById('week-row').innerHTML = [1,2,3,4].map(w => {
+    const key = wk(selMonth, w);
+    const anyUsed = cur().some(t => t.uw && t.uw.includes(key));
+    const isCur = w === selWeek;
+    const isPast = wkIdx(selMonth, w) < wkIdx(TODAY_MONTH, TODAY_WEEK);
+    const isFuture = wkIdx(selMonth, w) > wkIdx(TODAY_MONTH, TODAY_WEEK);
+    let cls = 'wpill';
+    if (isCur) cls += ' wactive';
+    else if (anyUsed) cls += ' wused';
+    const label = `W${w}`;
+    const hint = isFuture ? '○' : anyUsed ? '✓' : isCur ? '●' : '–';
+    return `<button class="${cls}" onclick="setWeek(${w})">${label}<br><span style="font-size:10px;opacity:0.7">${hint}</span></button>`;
+  }).join('');
+}
+
 function render() {
   const t = cur();
-  let vis = ageF ? t.filter(x=>x.age===ageF) : [...t];
-  if (filter!=='all') vis = vis.filter(x=>status(x)===filter);
+  let vis = ageF ? t.filter(x => x.age === ageF) : [...t];
+  if (filter !== 'all') vis = vis.filter(x => status(x) === filter);
 
-  const used = t.filter(x=>status(x)==='used');
-  const due  = t.filter(x=>status(x)==='due');
-  const stor = t.filter(x=>status(x)==='storage');
-  const n = used.length, full = n>=MAX;
-  const pct = Math.round((n/MAX)*100);
-  const kc = full?'full':`k${kid}`;
+  const used = t.filter(x => status(x) === 'used');
+  const due  = t.filter(x => status(x) === 'due');
+  const stor = t.filter(x => status(x) === 'storage');
+  const n = used.length, full = n >= MAX;
+  const kc = full ? 'full' : 'ck' + kid;
 
-  document.getElementById('cap-bar').innerHTML = `
+  document.getElementById('cap').innerHTML = `
     <div class="cap-row">
-      <span class="cap-label">${names[kid]}'s toys in use this month</span>
+      <span class="cap-label">${names[kid]} — ${MONTHS[selMonth-1]} Week ${selWeek} · in use</span>
       <span class="cap-count ${kc}">${n} / ${MAX}</span>
     </div>
-    <div class="cap-track"><div class="cap-fill ${kc}" style="width:${pct}%"></div></div>
+    <div class="cap-track"><div class="cap-fill ${kc}" style="width:${Math.round((n/MAX)*100)}%"></div></div>
   `;
 
   document.getElementById('stats').innerHTML = `
-    <div class="stat"><div class="stat-val">${t.length}</div><div class="stat-label">Total</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--green)">${n}</div><div class="stat-label">In use</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--amber)">${due.length}</div><div class="stat-label">Rotate in</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--text3)">${stor.length}</div><div class="stat-label">Storage</div></div>
+    <div class="stat"><div class="stat-v">${t.length}</div><div class="stat-l">Total</div></div>
+    <div class="stat"><div class="stat-v" style="color:var(--gr)">${n}</div><div class="stat-l">In use</div></div>
+    <div class="stat"><div class="stat-v" style="color:var(--am)">${due.length}</div><div class="stat-l">Rotate</div></div>
+    <div class="stat"><div class="stat-v" style="color:var(--tx3)">${stor.length}</div><div class="stat-l">Storage</div></div>
+  `;
+
+  // Month mini-calendar
+  const mm = document.getElementById('month-mini');
+  const weekCounts = [1,2,3,4].map(w => {
+    const key = wk(selMonth, w);
+    return cur().filter(x => x.uw && x.uw.includes(key)).length;
+  });
+  mm.innerHTML = `
+    <div class="mm-title">${MONTHS[selMonth-1]} overview — ${names[kid]}</div>
+    <div class="mm-weeks">${[1,2,3,4].map(w => {
+      const isCur = w === selWeek;
+      const hasData = weekCounts[w-1] > 0;
+      const cls = isCur ? 'mm-week mw-cur' : hasData ? 'mm-week mw-used' : 'mm-week';
+      return `<div class="${cls}"><div class="mm-wlabel">Week ${w}</div><div class="mm-wcount">${weekCounts[w-1]} toys</div></div>`;
+    }).join('')}</div>
   `;
 
   const tr = document.getElementById('tip-rot');
-  if (due.length>0) {
+  if (due.length > 0) {
     tr.className='tip rot show';
     const ns = due.slice(0,2).map(x=>x.name).join(', ');
-    tr.innerHTML=`<strong>Time to rotate:</strong> ${ns}${due.length>2?` + ${due.length-2} more`:''} — 4+ weeks out.`;
+    tr.innerHTML=`<strong>Time to rotate:</strong> ${ns}${due.length>2?` + ${due.length-2} more`:''} — in rotation 4+ consecutive weeks.`;
   } else { tr.className='tip rot'; }
 
   const list = document.getElementById('toy-list');
   if (!vis.length) { list.innerHTML='<div class="empty">No toys match this filter.</div>'; return; }
 
   list.innerHTML = vis.map(toy => {
-    const s = status(toy), isU = s==='used', isDue = s==='due';
+    const s = status(toy);
+    const isU = s==='used', isDue = s==='due';
     const canUse = isU || !full;
-    return `<div class="toy-card ${s}">
-      <div class="toy-top">
+    const streak = consecutiveWeeks(toy, selMonth, selWeek);
+    const streakTxt = streak > 0 ? `${streak} week${streak>1?'s':''} in a row` : 'not used recently';
+    const streakWarn = streak >= 3;
+    return `<div class="tcard ${s}">
+      <div class="ttop">
         <div>
-          <div class="toy-name">${toy.name}${isDue?'<span class="rlabel">ROTATE IN</span>':''}</div>
-          <div class="toy-cat">${toy.cat} · ${toy.w}w in rotation</div>
+          <div class="tname">${toy.name}${isDue?'<span class="rlabel">ROTATE</span>':''}${isU&&streak>=4?'<span class="rlabel">ROTATE SOON</span>':''}</div>
+          <div class="tcat">${toy.cat}</div>
+          <div class="week-streak ${streakWarn?'warn':''}">${streakTxt}</div>
         </div>
-        <span class="age-badge ${toy.age}">${AGE[toy.age]}</span>
+        <span class="abadge ${toy.age}">${AGE[toy.age]}</span>
       </div>
-      <div class="toy-bot">
-        <span class="toy-status">
-          <span class="dot ${isU?'d-used':isDue?'d-due':'d-stor'}"></span>
-          ${isU?'In use this month':isDue?'Ready to rotate in':'In storage'}
+      <div class="tbot">
+        <span class="tstatus">
+          <span class="dot ${isU?'du':isDue?'dd':'ds'}"></span>
+          ${isU?'In use this week':isDue?'Ready to rotate in':'In storage'}
         </span>
-        <div class="toy-acts">
-          <button class="btn-sm ${!isU&&canUse?'btn-use':''}"
+        <div class="tacts">
+          <button class="bsm ${!isU&&canUse?'buse':''}"
             onclick="toggleUsed(${toy.id})"
             ${!isU&&!canUse?'disabled style="opacity:0.38;cursor:not-allowed"':''}>
             ${isU?'Store':'Use'}
           </button>
-          <button class="btn-sm btn-ico" onclick="removeToy(${toy.id})" aria-label="Remove">✕</button>
+          <button class="bsm bico" onclick="removeToy(${toy.id})" aria-label="Remove">✕</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-renderTabs(); render();
+renderTabs(); renderMonthRow(); renderWeekRow(); render();
 </script>
 </body>
 </html>
